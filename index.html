@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML/CSS Learning Cards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card {
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+        .option:hover {
+            background-color: #e5e7eb;
+        }
+        .option.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .correct {
+            background-color: #10b981 !important;
+            color: white;
+        }
+        .incorrect {
+            background-color: #ef4444 !important;
+            color: white;
+        }
+        .topic-btn.active {
+            transform: scale(0.98);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card {
+                height: auto;
+                min-height: 300px;
+            }
+            .card-face {
+                position: relative;
+                backface-visibility: visible;
+            }
+            .card.flipped .card-face {
+                display: none;
+            }
+            .card.flipped .card-back {
+                display: block;
+                position: relative;
+                transform: none;
+            }
+            .card:not(.flipped) .card-back {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen p-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header with Logo and Developer Name -->
+        <header class="text-center mb-8 pt-4 fade-in">
+            <div class="flex flex-col md:flex-row items-center justify-center mb-4">
+                <div class="bg-blue-800 text-white p-4 rounded-xl mb-4 md:mb-0 md:mr-6">
+                    <i class="fas fa-code text-3xl md:text-4xl"></i>
+                </div>
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl md:text-4xl font-bold text-blue-800 mb-1">HTML/CSS Learning Cards</h1>
+                    <p class="text-gray-600 text-sm md:text-base">Created by Hassan Abdi Muhumed - Full Stack Software Developer</p>
+                </div>
+            </div>
+            <p class="text-gray-600 text-sm md:text-base">Test your knowledge and track your progress</p>
+        </header>
+
+        <!-- Progress Section -->
+        <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6 md:mb-8 fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg md:text-xl font-bold text-gray-800">Your Progress</h2>
+                <span id="progress-text" class="text-blue-600 font-semibold text-sm md:text-base">0/0</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3 md:h-4">
+                <div id="progress-bar" class="progress-bar bg-blue-600 h-3 md:h-4 rounded-full" style="width: 0%"></div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between mt-4 space-y-3 md:space-y-0">
+                <button id="reset-btn" class="px-3 py-2 md:px-4 md:py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm md:text-base">
+                    Reset Progress
+                </button>
+                <div class="flex space-x-2 md:space-x-4 justify-center">
+                    <button id="prev-btn" class="px-3 py-2 md:px-4 md:py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition text-sm md:text-base">
+                        <i class="fas fa-arrow-left mr-1 md:mr-2"></i>Previous
+                    </button>
+                    <button id="next-btn" class="px-3 py-2 md:px-4 md:py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm md:text-base">
+                        Next<i class="fas fa-arrow-right ml-1 md:ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topic Selection -->
+        <div class="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6 md:mb-8 fade-in">
+            <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4">Select a Topic</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                <button class="topic-btn p-3 md:p-4 bg-blue-100 text-blue-800 rounded-lg hover:bg-blue-200 transition text-sm md:text-base" data-topic="css-basics">
+                    CSS Basics
+                </button>
+                <button class="topic-btn p-3 md:p-4 bg-green-100 text-green-800 rounded-lg hover:bg-green-200 transition text-sm md:text-base" data-topic="flexbox">
+                    Flexbox
+                </button>
+                <button class="topic-btn p-3 md:p-4 bg-purple-100 text-purple-800 rounded-lg hover:bg-purple-200 transition text-sm md:text-base" data-topic="grid">
+                    CSS Grid
+                </button>
+                <button class="topic-btn p-3 md:p-4 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 transition text-sm md:text-base" data-topic="html-basics">
+                    HTML Basics
+                </button>
+                <button class="topic-btn p-3 md:p-4 bg-indigo-100 text-indigo-800 rounded-lg hover:bg-indigo-200 transition text-sm md:text-base" data-topic="css-advanced">
+                    CSS Advanced
+                </button>
+                <button class="topic-btn p-3 md:p-4 bg-pink-100 text-pink-800 rounded-lg hover:bg-pink-200 transition text-sm md:text-base" data-topic="html-advanced">
+                    HTML Advanced
+                </button>
+            </div>
+        </div>
+
+        <!-- Question Card -->
+        <div id="question-container" class="hidden fade-in">
+            <div class="card bg-white rounded-xl shadow-lg p-4 md:p-6 mb-6 md:mb-8 relative h-64 md:h-80">
+                <!-- Front of card (question) -->
+                <div class="card-face p-4 md:p-6 flex flex-col h-full">
+                    <div class="flex flex-col md:flex-row justify-between items-start mb-4 md:mb-6 space-y-2 md:space-y-0">
+                        <span id="question-number" class="text-blue-600 font-bold text-base md:text-lg">Question 1</span>
+                        <span id="topic-name" class="bg-blue-100 text-blue-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm">CSS Basics</span>
+                    </div>
+                    <div id="question-content" class="flex-grow overflow-y-auto">
+                        <!-- Question content will be inserted here -->
+                    </div>
+                    <div class="mt-4 text-right">
+                        <button id="flip-btn" class="text-blue-500 hover:text-blue-700 text-sm md:text-base">
+                            <i class="fas fa-sync-alt mr-1 md:mr-2"></i>Show Answer
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Back of card (answer) -->
+                <div class="card-face card-back p-4 md:p-6 flex flex-col h-full">
+                    <div class="flex flex-col md:flex-row justify-between items-start mb-4 md:mb-6 space-y-2 md:space-y-0">
+                        <span class="text-blue-600 font-bold text-base md:text-lg">Answer</span>
+                        <span id="answer-topic" class="bg-blue-100 text-blue-800 px-2 py-1 md:px-3 md:py-1 rounded-full text-xs md:text-sm">CSS Basics</span>
+                    </div>
+                    <div id="answer-content" class="flex-grow overflow-y-auto">
+                        <!-- Answer content will be inserted here -->
+                    </div>
+                    <div class="mt-4 text-right">
+                        <button id="flip-back-btn" class="text-blue-500 hover:text-blue-700 text-sm md:text-base">
+                            <i class="fas fa-sync-alt mr-1 md:mr-2"></i>Back to Question
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div id="options-container" class="bg-white rounded-xl shadow-lg p-4 md:p-6">
+                <h3 class="text-base md:text-lg font-bold text-gray-800 mb-3 md:mb-4">Select your answer:</h3>
+                <div id="options-list" class="space-y-2 md:space-y-3">
+                    <!-- Options will be inserted here -->
+                </div>
+                <div class="mt-4 md:mt-6 flex flex-col md:flex-row justify-between space-y-3 md:space-y-0">
+                    <button id="hint-btn" class="px-3 py-2 md:px-4 md:py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition text-sm md:text-base">
+                        <i class="fas fa-lightbulb mr-1 md:mr-2"></i>Show Hint
+                    </button>
+                    <button id="submit-btn" class="px-4 py-2 md:px-6 md:py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-sm md:text-base">
+                        Submit Answer
+                    </button>
+                </div>
+                <div id="feedback" class="mt-3 md:mt-4 hidden p-3 md:p-4 rounded-lg text-sm md:text-base"></div>
+            </div>
+        </div>
+
+        <!-- Completion Message -->
+        <div id="completion-message" class="hidden bg-white rounded-xl shadow-lg p-6 md:p-8 text-center fade-in">
+            <i class="fas fa-trophy text-4xl md:text-6xl text-yellow-500 mb-3 md:mb-4 pulse"></i>
+            <h2 class="text-xl md:text-3xl font-bold text-gray-800 mb-3 md:mb-4">Congratulations!</h2>
+            <p class="text-gray-600 mb-4 md:mb-6 text-sm md:text-base">You've completed all questions in this topic.</p>
+            <button id="restart-btn" class="px-4 py-2 md:px-6 md:py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm md:text-base">
+                Select Another Topic
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Questions database with expanded sets (50+ questions per topic)
+        const questionsData = {
+            "css-advanced": [
+                {
+                    id: 1,
+                    question: "What does the 'clip-path' property do?",
+                    code: ``,
+                    options: [
+                        "Creates a clipping region",
+                        "Adds a shadow to elements", 
+                        "Controls text overflow",
+                        "Defines animation paths"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The clip-path property creates a clipping region that defines what part of an element is visible.",
+                    hint: "Think about properties that control element visibility."
+                },
+                {
+                    id: 2,
+                    question: "What is the purpose of CSS blend modes?",
+                    code: ``,
+                    options: [
+                        "Blend elements with their background",
+                        "Create gradient backgrounds",
+                        "Animate elements smoothly",
+                        "Apply 3D transformations"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS blend modes allow elements to blend with their background using various algorithms.",
+                    hint: "Think about Photoshop-like blending effects."
+                },
+                {
+                    id: 3,
+                    question: "What does 'backface-visibility: hidden;' do?",
+                    code: ``,
+                    options: [
+                        "Hides the back face of rotated elements",
+                        "Makes elements invisible",
+                        "Prevents background images from showing",
+                        "Hides elements from screen readers"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "backface-visibility: hidden; hides the back face of an element when it's rotated in 3D space.",
+                    hint: "Think about 3D transformations."
+                },
+                {
+                    id: 4,
+                    question: "What is the purpose of CSS masks?",
+                    code: ``,
+                    options: [
+                        "Hide portions of an element",
+                        "Create rounded corners",
+                        "Add borders to elements",
+                        "Control text wrapping"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS masks allow you to hide portions of an element using another image or gradient as a mask.",
+                    hint: "Think about selective visibility."
+                },
+                {
+                    id: 5,
+                    question: "What does 'isolation: isolate;' do?",
+                    code: ``,
+                    options: [
+                        "Creates a new stacking context",
+                        "Isolates elements from CSS inheritance",
+                        "Prevents element interactions",
+                        "Creates physical separation between elements"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "isolation: isolate; creates a new stacking context, useful for controlling blend modes and z-index.",
+                    hint: "Think about stacking contexts and blend modes."
+                },
+                {
+                    id: 6,
+                    question: "What is the purpose of CSS shapes?",
+                    code: ``,
+                    options: [
+                        "Wrap content around custom shapes",
+                        "Create geometric patterns",
+                        "Define element boundaries",
+                        "Generate SVG-like shapes"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS shapes allow text to wrap around custom shapes defined by images or basic shapes.",
+                    hint: "Think about magazine-style layouts."
+                },
+                {
+                    id: 7,
+                    question: "What does 'mix-blend-mode: multiply;' do?",
+                    code: ``,
+                    options: [
+                        "Multiplies the colors of element and background",
+                        "Blends elements using addition",
+                        "Creates a transparent effect",
+                        "Mixes multiple background images"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "mix-blend-mode: multiply; multiplies the element's colors with the background colors.",
+                    hint: "Think about Photoshop blend modes."
+                },
+                {
+                    id: 8,
+                    question: "What is the purpose of CSS filters?",
+                    code: ``,
+                    options: [
+                        "Apply visual effects like blur and contrast",
+                        "Filter HTML elements",
+                        "Create data filters",
+                        "Apply color grading"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS filters apply graphical effects like blur, brightness, contrast, and more to elements.",
+                    hint: "Think about Instagram-like filters."
+                },
+                {
+                    id: 9,
+                    question: "What does 'will-change' property optimize?",
+                    code: ``,
+                    options: [
+                        "Browser rendering performance",
+                        "CSS file loading",
+                        "JavaScript execution",
+                        "Network requests"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "will-change hints to browsers which properties are likely to change, allowing optimization.",
+                    hint: "Think about performance optimization."
+                },
+                {
+                    id: 10,
+                    question: "What is CSS containment?",
+                    code: ``,
+                    options: [
+                        "Isolates element's rendering",
+                        "Contains text within boundaries",
+                        "Prevents element overflow",
+                        "Controls element sizing"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS containment isolates an element's rendering to improve performance.",
+                    hint: "Think about rendering optimization."
+                },
+                {
+                    id: 11,
+                    question: "What does 'backdrop-filter' apply effects to?",
+                    code: ``,
+                    options: [
+                        "Area behind an element",
+                        "Element's foreground",
+                        "Parent element",
+                        "Entire viewport"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "backdrop-filter applies filter effects to the area behind an element.",
+                    hint: "Think about frosted glass effects."
+                },
+                {
+                    id: 12,
+                    question: "What is the purpose of CSS scroll snap?",
+                    code: ``,
+                    options: [
+                        "Control scroll position alignment",
+                        "Prevent scrolling",
+                        "Animate scrolling",
+                        "Customize scrollbars"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS scroll snap allows control over scroll position alignment within containers.",
+                    hint: "Think about carousel or gallery scrolling."
+                },
+                {
+                    id: 13,
+                    question: "What does 'overscroll-behavior' control?",
+                    code: ``,
+                    options: [
+                        "Scroll chaining behavior",
+                        "Scroll speed",
+                        "Scroll direction",
+                        "Scroll momentum"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "overscroll-behavior controls what happens when scrolling reaches boundaries.",
+                    hint: "Think about nested scrolling containers."
+                },
+                {
+                    id: 14,
+                    question: "What is the purpose of CSS subgrid?",
+                    code: ``,
+                    options: [
+                        "Share parent grid with nested grids",
+                        "Create smaller grids",
+                        "Nest grids infinitely",
+                        "Auto-generate grid templates"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS subgrid allows nested grids to share the parent grid's track sizing.",
+                    hint: "Think about complex grid layouts."
+                },
+                {
+                    id: 15,
+                    question: "What does 'font-display: swap;' do?",
+                    code: ``,
+                    options: [
+                        "Shows fallback font while loading",
+                        "Swaps font families dynamically",
+                        "Animates font changes",
+                        "Changes font based on viewport"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "font-display: swap; shows a fallback font immediately while the web font loads.",
+                    hint: "Think about web font loading performance."
+                },
+                {
+                    id: 16,
+                    question: "What is the purpose of CSS logical properties?",
+                    code: ``,
+                    options: [
+                        "Support different writing modes",
+                        "Create logical operations in CSS",
+                        "Apply conditional styles",
+                        "Implement CSS variables"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS logical properties adapt to different writing modes and text directions.",
+                    hint: "Think about internationalization and RTL languages."
+                },
+                {
+                    id: 17,
+                    question: "What does 'content-visibility: auto;' optimize?",
+                    code: ``,
+                    options: [
+                        "Rendering of off-screen content",
+                        "Content loading speed",
+                        "Image compression",
+                        "Text rendering"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "content-visibility: auto; skips rendering of off-screen content to improve performance.",
+                    hint: "Think about large document performance."
+                },
+                {
+                    id: 18,
+                    question: "What is the purpose of CSS masonry layout?",
+                    code: ``,
+                    options: [
+                        "Create Pinterest-style layouts",
+                        "Build brick walls with CSS",
+                        "Animate masonry effects",
+                        "Create 3D grid layouts"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS masonry creates layouts where items are arranged optimally based on available space.",
+                    hint: "Think about image gallery layouts."
+                },
+                {
+                    id: 19,
+                    question: "What does 'accent-color' property style?",
+                    code: ``,
+                    options: [
+                        "Form control accents",
+                        "Text selection color",
+                        "Link hover states",
+                        "Button backgrounds"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "accent-color sets the accent color for form controls like checkboxes and radio buttons.",
+                    hint: "Think about form styling."
+                },
+                {
+                    id: 20,
+                    question: "What is the purpose of CSS color functions?",
+                    code: ``,
+                    options: [
+                        "Manipulate colors programmatically",
+                        "Create color palettes",
+                        "Apply color filters",
+                        "Generate random colors"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS color functions like lab(), lch(), and color-mix() allow advanced color manipulation.",
+                    hint: "Think about modern color spaces."
+                },
+                {
+                    id: 21,
+                    question: "What does 'scrollbar-gutter' control?",
+                    code: ``,
+                    options: [
+                        "Space reserved for scrollbars",
+                        "Scrollbar appearance",
+                        "Scrollbar animation",
+                        "Scrollbar positioning"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "scrollbar-gutter reserves space for scrollbars to prevent layout shifts.",
+                    hint: "Think about layout stability."
+                },
+                {
+                    id: 22,
+                    question: "What is the purpose of CSS anchor positioning?",
+                    code: ``,
+                    options: [
+                        "Position elements relative to anchors",
+                        "Create fixed navigation",
+                        "Implement scrollspy effects",
+                        "Position elements in 3D space"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS anchor positioning allows elements to be positioned relative to anchor points.",
+                    hint: "Think about tooltips and popovers."
+                },
+                {
+                    id: 23,
+                    question: "What does 'font-palette' control?",
+                    code: ``,
+                    options: [
+                        "Color palette for color fonts",
+                        "Font family selection",
+                        "Font size scaling",
+                        "Font weight variants"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "font-palette selects color palettes for color fonts like COLR fonts.",
+                    hint: "Think about multi-colored fonts."
+                },
+                {
+                    id: 24,
+                    question: "What is the purpose of CSS nesting?",
+                    code: ``,
+                    options: [
+                        "Write nested CSS rules",
+                        "Create nested HTML elements",
+                        "Implement component styles",
+                        "Generate complex selectors"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS nesting allows writing nested rules similar to Sass/SCSS syntax.",
+                    hint: "Think about CSS preprocessors."
+                },
+                {
+                    id: 25,
+                    question: "What does 'view-transition-name' create?",
+                    code: ``,
+                    options: [
+                        "Named view transitions",
+                        "Custom animation names",
+                        "Transition timing functions",
+                        "Viewport transition effects"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "view-transition-name creates named view transitions for smooth page/section changes.",
+                    hint: "Think about single-page application transitions."
+                },
+                {
+                    id: 26,
+                    question: "What is the purpose of CSS trigonometric functions?",
+                    code: ``,
+                    options: [
+                        "Perform mathematical calculations",
+                        "Create geometric shapes",
+                        "Animate circular motion",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "CSS trigonometric functions like sin(), cos(), and tan() enable complex calculations for layouts and animations.",
+                    hint: "Think about mathematical operations in CSS."
+                },
+                {
+                    id: 27,
+                    question: "What does 'color-scheme' control?",
+                    code: ``,
+                    options: [
+                        "Light/dark mode rendering",
+                        "Color palette selection",
+                        "Gradient color schemes",
+                        "Accessibility color contrast"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "color-scheme indicates which color schemes the element supports (light/dark).",
+                    hint: "Think about dark mode compatibility."
+                },
+                {
+                    id: 28,
+                    question: "What is the purpose of CSS container queries?",
+                    code: ``,
+                    options: [
+                        "Style based on container size",
+                        "Query DOM containers",
+                        "Create container components",
+                        "Manage container overflow"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS container queries allow styling elements based on their container's size rather than viewport.",
+                    hint: "Think about component-based responsive design."
+                },
+                {
+                    id: 29,
+                    question: "What does 'initial-letter' style?",
+                    code: ``,
+                    options: [
+                        "Drop caps and initial letters",
+                        "First letter of paragraphs",
+                        "Capital letters only",
+                        "Letter spacing"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "initial-letter creates drop caps and styled initial letters in text.",
+                    hint: "Think about typographic enhancements."
+                },
+                {
+                    id: 30,
+                    question: "What is the purpose of CSS scroll-driven animations?",
+                    code: ``,
+                    options: [
+                        "Animate based on scroll position",
+                        "Create infinite scroll animations",
+                        "Animate scrollbars",
+                        "Smooth scroll behavior"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS scroll-driven animations trigger and control animations based on scroll position.",
+                    hint: "Think about parallax and scroll-triggered effects."
+                },
+                {
+                    id: 31,
+                    question: "What does 'text-wrap: balance;' do?",
+                    code: ``,
+                    options: [
+                        "Balances text across lines",
+                        "Wraps text evenly",
+                        "Justifies text",
+                        "Creates text columns"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "text-wrap: balance; attempts to balance text across lines for better readability.",
+                    hint: "Think about typography optimization."
+                },
+                {
+                    id: 32,
+                    question: "What is the purpose of CSS relative colors?",
+                    code: ``,
+                    options: [
+                        "Modify colors relative to other colors",
+                        "Create responsive color schemes",
+                        "Generate color variations",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "CSS relative colors allow modifying colors by adjusting their channels relative to other colors.",
+                    hint: "Think about dynamic color manipulation."
+                },
+                {
+                    id: 33,
+                    question: "What does 'animation-composition' control?",
+                    code: ``,
+                    options: [
+                        "How multiple animations combine",
+                        "Animation performance",
+                        "Animation sequencing",
+                        "Animation timing"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "animation-composition controls how multiple animations affecting the same property combine.",
+                    hint: "Think about complex animation scenarios."
+                },
+                {
+                    id: 34,
+                    question: "What is the purpose of CSS anchor queries?",
+                    code: ``,
+                    options: [
+                        "Query element's position relative to anchors",
+                        "Create anchor-based layouts",
+                        "Implement sticky positioning",
+                        "Manage scroll anchors"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS anchor queries allow querying an element's position relative to anchor elements.",
+                    hint: "Think about dynamic positioning systems."
+                },
+                {
+                    id: 35,
+                    question: "What does 'font-size-adjust' preserve?",
+                    code: ``,
+                    options: [
+                        "Text readability across fonts",
+                        "Font size consistency",
+                        "Line height ratios",
+                        "Character spacing"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "font-size-adjust preserves the x-height of text when font families change.",
+                    hint: "Think about typography consistency."
+                },
+                {
+                    id: 36,
+                    question: "What is the purpose of CSS color-mix()?",
+                    code: ``,
+                    options: [
+                        "Mix two colors together",
+                        "Create color gradients",
+                        "Generate color palettes",
+                        "Apply color filters"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "color-mix() function mixes two colors in a specified color space.",
+                    hint: "Think about color manipulation functions."
+                },
+                {
+                    id: 37,
+                    question: "What does 'overflow-anchor' prevent?",
+                    code: ``,
+                    options: [
+                        "Scroll position jumps",
+                        "Overflow scrolling",
+                        "Anchor element overflow",
+                        "Text overflow"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "overflow-anchor prevents scroll position jumps when content changes above the viewport.",
+                    hint: "Think about dynamic content and scroll stability."
+                },
+                {
+                    id: 38,
+                    question: "What is the purpose of CSS @layer?",
+                    code: ``,
+                    options: [
+                        "Organize CSS into cascading layers",
+                        "Create background layers",
+                        "Implement z-index layers",
+                        "Manage CSS specificity"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS @layer allows organizing styles into cascading layers with controlled specificity.",
+                    hint: "Think about CSS architecture and specificity management."
+                },
+                {
+                    id: 39,
+                    question: "What does 'text-spacing-trim' control?",
+                    code: ``,
+                    options: [
+                        "Spacing around punctuation",
+                        "Text alignment spacing",
+                        "Letter spacing consistency",
+                        "Word spacing optimization"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "text-spacing-trim controls spacing around punctuation marks in text.",
+                    hint: "Think about typographic refinement."
+                },
+                {
+                    id: 40,
+                    question: "What is the purpose of CSS @scope?",
+                    code: ``,
+                    options: [
+                        "Scope styles to specific DOM subtrees",
+                        "Create local CSS variables",
+                        "Limit style inheritance",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "CSS @scope allows scoping styles to specific portions of the DOM, similar to Shadow DOM but lighter.",
+                    hint: "Think about component styling without Shadow DOM."
+                },
+                {
+                    id: 41,
+                    question: "What does 'page-transition-tag' identify?",
+                    code: ``,
+                    options: [
+                        "Elements for shared page transitions",
+                        "Page transition types",
+                        "Transition timing tags",
+                        "Animation keyframe tags"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "page-transition-tag identifies elements that should be shared between page transitions.",
+                    hint: "Think about smooth page navigation."
+                },
+                {
+                    id: 42,
+                    question: "What is the purpose of CSS anchor() function?",
+                    code: ``,
+                    options: [
+                        "Position elements relative to anchors",
+                        "Create anchor links",
+                        "Style anchor elements",
+                        "Implement scroll anchoring"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS anchor() function allows positioning elements relative to anchor elements.",
+                    hint: "Think about dynamic positioning systems."
+                },
+                {
+                    id: 43,
+                    question: "What does 'font-variant-emoji' control?",
+                    code: ``,
+                    options: [
+                        "Emoji rendering style",
+                        "Emoji font selection",
+                        "Emoji color palette",
+                        "Emoji animation"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "font-variant-emoji controls how emoji characters are rendered.",
+                    hint: "Think about emoji presentation."
+                },
+                {
+                    id: 44,
+                    question: "What is the purpose of CSS @property?",
+                    code: ``,
+                    options: [
+                        "Define custom CSS properties with types",
+                        "Create CSS variables",
+                        "Define element properties",
+                        "Specify CSS inheritance"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS @property allows defining custom properties with type checking and constraints.",
+                    hint: "Think about typed CSS custom properties."
+                },
+                {
+                    id: 45,
+                    question: "What does 'text-edge' control?",
+                    code: ``,
+                    options: [
+                        "Text alignment to layout edges",
+                        "Text overflow behavior",
+                        "Text decoration edges",
+                        "Text shadow edges"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "text-edge controls how text aligns to layout edges in different writing modes.",
+                    hint: "Think about international text layout."
+                },
+                {
+                    id: 46,
+                    question: "What is the purpose of CSS color-contrast()?",
+                    code: ``,
+                    options: [
+                        "Select colors with sufficient contrast",
+                        "Calculate color contrast ratios",
+                        "Apply contrast filters",
+                        "Generate accessible color palettes"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "color-contrast() selects the first color from a list that meets contrast requirements.",
+                    hint: "Think about accessibility and color contrast."
+                },
+                {
+                    id: 47,
+                    question: "What does 'animation-timeline' control?",
+                    code: ``,
+                    options: [
+                        "Animation progress based on timeline",
+                        "Animation duration",
+                        "Animation delay",
+                        "Animation iteration count"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "animation-timeline controls animation progress based on scroll or view progress.",
+                    hint: "Think about scroll-driven animations."
+                },
+                {
+                    id: 48,
+                    question: "What is the purpose of CSS @import?",
+                    code: ``,
+                    options: [
+                        "Import external CSS files",
+                        "Import JavaScript modules",
+                        "Import HTML templates",
+                        "Import font files"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "@import allows importing rules from other CSS files.",
+                    hint: "Think about CSS file organization."
+                },
+                {
+                    id: 49,
+                    question: "What does 'text-box-trim' optimize?",
+                    code: ``,
+                    options: [
+                        "Space around text in layout",
+                        "Text trimming in overflow",
+                        "Text box shadows",
+                        "Text border spacing"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "text-box-trim optimizes space around text by trimming unnecessary space.",
+                    hint: "Think about typographic precision."
+                },
+                {
+                    id: 50,
+                    question: "What is the purpose of CSS env() function?",
+                    code: ``,
+                    options: [
+                        "Access environment variables",
+                        "Set environment-specific styles",
+                        "Create environmental animations",
+                        "All of the above"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "CSS env() function accesses environment variables like safe-area-inset-top.",
+                    hint: "Think about device-specific styling."
+                }
+            ],
+            "html-advanced": [
+                {
+                    id: 1,
+                    question: "What is the purpose of the <article> element?",
+                    code: ``,
+                    options: [
+                        "Represents self-contained content",
+                        "Creates a navigation section", 
+                        "Defines a sidebar",
+                        "Groups heading elements"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <article> element represents a self-contained composition in a document.",
+                    hint: "Think about semantic HTML5 elements."
+                },
+                {
+                    id: 2,
+                    question: "What is the purpose of the <template> element?",
+                    code: ``,
+                    options: [
+                        "Store client-side content for later use",
+                        "Define page templates",
+                        "Create reusable HTML patterns",
+                        "All of the above"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <template> element holds client-side content that isn't rendered immediately.",
+                    hint: "Think about JavaScript-driven content."
+                },
+                {
+                    id: 3,
+                    question: "What does the <dialog> element create?",
+                    code: ``,
+                    options: [
+                        "A modal or non-modal dialog box",
+                        "A conversation interface",
+                        "A debug console",
+                        "A chat interface"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <dialog> element represents a dialog box or other interactive component.",
+                    hint: "Think about modal windows."
+                },
+                {
+                    id: 4,
+                    question: "What is the purpose of the <details> element?",
+                    code: ``,
+                    options: [
+                        "Create disclosure widgets",
+                        "Show detailed information",
+                        "Hide sensitive content",
+                        "Create tooltips"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <details> element creates a disclosure widget for showing/hiding content.",
+                    hint: "Think about expandable sections."
+                },
+                {
+                    id: 5,
+                    question: "What does the <main> element represent?",
+                    code: ``,
+                    options: [
+                        "The dominant content of the document",
+                        "The main navigation",
+                        "The primary header",
+                        "The body content"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <main> element represents the dominant content of the <body>.",
+                    hint: "Think about document structure."
+                },
+                {
+                    id: 6,
+                    question: "What is the purpose of the <mark> element?",
+                    code: ``,
+                    options: [
+                        "Highlight text for reference",
+                        "Mark important content",
+                        "Create bookmarks",
+                        "Indicate completed tasks"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <mark> element represents text highlighted for reference purposes.",
+                    hint: "Think about search result highlighting."
+                },
+                {
+                    id: 7,
+                    question: "What does the <time> element represent?",
+                    code: ``,
+                    options: [
+                        "A specific period in time",
+                        "A clock interface",
+                        "Time-based animations",
+                        "Countdown timers"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <time> element represents a specific period in time.",
+                    hint: "Think about machine-readable dates."
+                },
+                {
+                    id: 8,
+                    question: "What is the purpose of the <meter> element?",
+                    code: ``,
+                    options: [
+                        "Represent a scalar measurement",
+                        "Create progress bars",
+                        "Display temperature",
+                        "Show speed indicators"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <meter> element represents a scalar measurement within a known range.",
+                    hint: "Think about gauge displays."
+                },
+                {
+                    id: 9,
+                    question: "What does the <progress> element display?",
+                    code: ``,
+                    options: [
+                        "Completion progress of a task",
+                        "File upload progress",
+                        "Loading indicators",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <progress> element displays completion progress of a task.",
+                    hint: "Think about progress indicators."
+                },
+                {
+                    id: 10,
+                    question: "What is the purpose of the <output> element?",
+                    code: ``,
+                    options: [
+                        "Display calculation results",
+                        "Show form output",
+                        "Display script results",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <output> element represents the result of a calculation or user action.",
+                    hint: "Think about calculator displays."
+                },
+                {
+                    id: 11,
+                    question: "What does the <datalist> element provide?",
+                    code: ``,
+                    options: [
+                        "Predefined options for input elements",
+                        "Data lists for display",
+                        "Database connections",
+                        "List formatting"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <datalist> element contains a set of <option> elements for input suggestions.",
+                    hint: "Think about autocomplete functionality."
+                },
+                {
+                    id: 12,
+                    question: "What is the purpose of the <figure> element?",
+                    code: ``,
+                    options: [
+                        "Group media content with captions",
+                        "Create decorative figures",
+                        "Display mathematical figures",
+                        "Show diagram figures"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <figure> element represents self-contained content with an optional caption.",
+                    hint: "Think about images with captions."
+                },
+                {
+                    id: 13,
+                    question: "What does the <figcaption> element represent?",
+                    code: ``,
+                    options: [
+                        "A caption for a <figure> element",
+                        "A figure description",
+                        "An image alt text",
+                        "A media title"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <figcaption> element represents a caption for its parent <figure>.",
+                    hint: "Think about image captions."
+                },
+                {
+                    id: 14,
+                    question: "What is the purpose of the <address> element?",
+                    code: ``,
+                    options: [
+                        "Contact information for the author",
+                        "Physical address display",
+                        "Email address formatting",
+                        "URL addresses"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <address> element provides contact information for its nearest article or body.",
+                    hint: "Think about author contact info."
+                },
+                {
+                    id: 15,
+                    question: "What does the <wbr> element indicate?",
+                    code: ``,
+                    options: [
+                        "A possible line break opportunity",
+                        "A word boundary",
+                        "A breaking space",
+                        "A non-breaking space"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <wbr> element represents a word break opportunity.",
+                    hint: "Think about long word wrapping."
+                },
+                {
+                    id: 16,
+                    question: "What is the purpose of the <ruby> element?",
+                    code: ``,
+                    options: [
+                        "Display ruby annotations",
+                        "Create colored text",
+                        "Show programming code",
+                        "Display gemstone symbols"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <ruby> element represents ruby annotations for East Asian typography.",
+                    hint: "Think about pronunciation guides."
+                },
+                {
+                    id: 17,
+                    question: "What does the <bdi> element do?",
+                    code: ``,
+                    options: [
+                        "Isolates bidirectional text",
+                        "Creates bold text",
+                        "Displays bidirectional arrows",
+                        "Shows bidirectional icons"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <bdi> element isolates a span of text for bidirectional formatting.",
+                    hint: "Think about mixed-direction text."
+                },
+                {
+                    id: 18,
+                    question: "What is the purpose of the <data> element?",
+                    code: ``,
+                    options: [
+                        "Link content to machine-readable value",
+                        "Store data attributes",
+                        "Create data tables",
+                        "Display data visualizations"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <data> element links content to a machine-readable translation.",
+                    hint: "Think about semantic data association."
+                },
+                {
+                    id: 19,
+                    question: "What does the <slot> element represent?",
+                    code: ``,
+                    options: [
+                        "A placeholder in web components",
+                        "A time slot",
+                        "An empty space",
+                        "A CSS grid slot"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <slot> element is a placeholder in web component shadow DOM.",
+                    hint: "Think about web components."
+                },
+                {
+                    id: 20,
+                    question: "What is the purpose of the <canvas> element?",
+                    code: ``,
+                    options: [
+                        "Draw graphics via scripting",
+                        "Create image containers",
+                        "Display canvas art",
+                        "Show painting interfaces"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <canvas> element is used to draw graphics via JavaScript.",
+                    hint: "Think about dynamic graphics."
+                },
+                {
+                    id: 21,
+                    question: "What does the <picture> element provide?",
+                    code: ``,
+                    options: [
+                        "Multiple image sources for different displays",
+                        "Image galleries",
+                        "Picture frames",
+                        "Image editing"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <picture> element contains multiple <source> elements for responsive images.",
+                    hint: "Think about responsive images."
+                },
+                {
+                    id: 22,
+                    question: "What is the purpose of the <source> element?",
+                    code: ``,
+                    options: [
+                        "Specify multiple media resources",
+                        "Load external resources",
+                        "Create audio/video sources",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <source> element specifies multiple media resources for <picture>, <audio>, or <video>.",
+                    hint: "Think about media fallbacks."
+                },
+                {
+                    id: 23,
+                    question: "What does the <track> element provide?",
+                    code: ``,
+                    options: [
+                        "Text tracks for media elements",
+                        "Audio tracks",
+                        "Video tracks",
+                        "Animation tracks"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <track> element specifies text tracks for <audio> or <video> elements.",
+                    hint: "Think about subtitles and captions."
+                },
+                {
+                    id: 24,
+                    question: "What is the purpose of the <map> element?",
+                    code: ``,
+                    options: [
+                        "Define an image map",
+                        "Create geographical maps",
+                        "Display map visualizations",
+                        "Implement mapping interfaces"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <map> element defines an image map with clickable areas.",
+                    hint: "Think about clickable image regions."
+                },
+                {
+                    id: 25,
+                    question: "What does the <area> element define?",
+                    code: ``,
+                    options: [
+                        "A clickable area in an image map",
+                        "A geographical area",
+                        "A layout area",
+                        "A content area"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <area> element defines a clickable area in an image map.",
+                    hint: "Think about image map hotspots."
+                },
+                {
+                    id: 26,
+                    question: "What is the purpose of the <object> element?",
+                    code: ``,
+                    options: [
+                        "Embed external resources",
+                        "Create JavaScript objects",
+                        "Define CSS objects",
+                        "Store data objects"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <object> element represents an external resource or plugin.",
+                    hint: "Think about embedded content."
+                },
+                {
+                    id: 27,
+                    question: "What does the <embed> element do?",
+                    code: ``,
+                    options: [
+                        "Embed external content or plugin",
+                        "Embed CSS styles",
+                        "Embed JavaScript",
+                        "Embed HTML fragments"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <embed> element embeds external content at the specified point.",
+                    hint: "Think about plugin content."
+                },
+                {
+                    id: 28,
+                    question: "What is the purpose of the <iframe> element?",
+                    code: ``,
+                    options: [
+                        "Embed another HTML page",
+                        "Create inline frames",
+                        "Load external content",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <iframe> element represents a nested browsing context.",
+                    hint: "Think about embedded web pages."
+                },
+                {
+                    id: 29,
+                    question: "What does the <portal> element enable?",
+                    code: ``,
+                    options: [
+                        "Seamless navigation to other pages",
+                        "Portal creation for games",
+                        "3D portal effects",
+                        "Portal-based layouts"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <portal> element enables seamless navigation to other pages.",
+                    hint: "Think about preview navigation."
+                },
+                {
+                    id: 30,
+                    question: "What is the purpose of the <math> element?",
+                    code: ``,
+                    options: [
+                        "Display mathematical formulas",
+                        "Perform calculations",
+                        "Create math interfaces",
+                        "Show mathematical symbols"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <math> element represents mathematical formulas.",
+                    hint: "Think about MathML."
+                },
+                {
+                    id: 31,
+                    question: "What does the <svg> element create?",
+                    code: ``,
+                    options: [
+                        "Scalable Vector Graphics",
+                        "Simple Vector Graphics",
+                        "Static Vector Graphics",
+                        "Styled Vector Graphics"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <svg> element defines a container for SVG graphics.",
+                    hint: "Think about vector images."
+                },
+                {
+                    id: 32,
+                    question: "What is the purpose of the <base> element?",
+                    code: ``,
+                    options: [
+                        "Specify base URL for relative URLs",
+                        "Define base styles",
+                        "Create base templates",
+                        "Set base font size"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <base> element specifies the base URL for relative URLs.",
+                    hint: "Think about URL resolution."
+                },
+                {
+                    id: 33,
+                    question: "What does the <link> element establish?",
+                    code: ``,
+                    options: [
+                        "Relationship between documents",
+                        "Hyperlink connections",
+                        "CSS style connections",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <link> element defines relationships between current and external resources.",
+                    hint: "Think about external resource linking."
+                },
+                {
+                    id: 34,
+                    question: "What is the purpose of the <meta> element?",
+                    code: ``,
+                    options: [
+                        "Provide metadata about the document",
+                        "Create meta tags for SEO",
+                        "Define character encoding",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <meta> element represents metadata that cannot be represented by other elements.",
+                    hint: "Think about document information."
+                },
+                {
+                    id: 35,
+                    question: "What does the <style> element contain?",
+                    code: ``,
+                    options: [
+                        "CSS style information",
+                        "HTML styling attributes",
+                        "JavaScript style objects",
+                        "Inline styling rules"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <style> element contains style information for the document.",
+                    hint: "Think about embedded CSS."
+                },
+                {
+                    id: 36,
+                    question: "What is the purpose of the <script> element?",
+                    code: ``,
+                    options: [
+                        "Embed or reference executable code",
+                        "Create script elements",
+                        "Load JavaScript files",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <script> element is used to embed or reference executable code.",
+                    hint: "Think about JavaScript inclusion."
+                },
+                {
+                    id: 37,
+                    question: "What does the <noscript> element provide?",
+                    code: ``,
+                    options: [
+                        "Fallback content when scripts are disabled",
+                        "No-script warnings",
+                        "Script alternatives",
+                        "Non-JavaScript content"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <noscript> element defines content for when scripts are not supported.",
+                    hint: "Think about accessibility and compatibility."
+                },
+                {
+                    id: 38,
+                    question: "What is the purpose of the <template> element?",
+                    code: ``,
+                    options: [
+                        "Declare fragments of HTML for later use",
+                        "Create page templates",
+                        "Define reusable components",
+                        "Store template data"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <template> element holds HTML that isn't rendered immediately.",
+                    hint: "Think about client-side templating."
+                },
+                {
+                    id: 39,
+                    question: "What does the <slot> element enable?",
+                    code: ``,
+                    options: [
+                        "Content distribution in web components",
+                        "Slot machine animations",
+                        "Time slot scheduling",
+                        "Layout slot positioning"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <slot> element enables content distribution in web components.",
+                    hint: "Think about Shadow DOM composition."
+                },
+                {
+                    id: 40,
+                    question: "What is the purpose of the <shadow> element?",
+                    code: ``,
+                    options: [
+                        "Insert shadow DOM content (deprecated)",
+                        "Create shadow effects",
+                        "Define shadow boundaries",
+                        "Apply shadow styling"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <shadow> element was used to insert shadow DOM content (now deprecated).",
+                    hint: "Think about web component history."
+                },
+                {
+                    id: 41,
+                    question: "What does the <content> element do?",
+                    code: ``,
+                    options: [
+                        "Distribute light DOM content (deprecated)",
+                        "Display content areas",
+                        "Create content containers",
+                        "Manage content flow"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <content> element was used for content distribution (replaced by <slot>).",
+                    hint: "Think about web component evolution."
+                },
+                {
+                    id: 42,
+                    question: "What is the purpose of the <element> element?",
+                    code: ``,
+                    options: [
+                        "Define custom elements (obsolete)",
+                        "Create generic elements",
+                        "Specify element types",
+                        "Define element behavior"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <element> element was intended for custom element definition (obsolete).",
+                    hint: "Think about custom elements history."
+                },
+                {
+                    id: 43,
+                    question: "What does the <isindex> element create?",
+                    code: ``,
+                    options: [
+                        "A single-line text input (obsolete)",
+                        "An index page",
+                        "A search interface",
+                        "An input selector"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <isindex> element created a single-line text input (obsolete).",
+                    hint: "Think about deprecated HTML elements."
+                },
+                {
+                    id: 44,
+                    question: "What is the purpose of the <keygen> element?",
+                    code: ``,
+                    options: [
+                        "Generate key pairs (obsolete)",
+                        "Create keyboard shortcuts",
+                        "Generate access keys",
+                        "Create security keys"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <keygen> element was used for key pair generation (obsolete).",
+                    hint: "Think about deprecated security elements."
+                },
+                {
+                    id: 45,
+                    question: "What does the <menu> element represent?",
+                    code: ``,
+                    options: [
+                        "A group of commands",
+                        "Navigation menus",
+                        "Context menus",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <menu> element represents a group of commands that a user can perform.",
+                    hint: "Think about command interfaces."
+                },
+                {
+                    id: 46,
+                    question: "What is the purpose of the <menuitem> element?",
+                    code: ``,
+                    options: [
+                        "Define a command in a menu",
+                        "Create menu items",
+                        "Specify menu options",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <menuitem> element represents a command that a user can invoke.",
+                    hint: "Think about context menu commands."
+                },
+                {
+                    id: 47,
+                    question: "What does the <command> element define?",
+                    code: ``,
+                    options: [
+                        "A command button (obsolete)",
+                        "Keyboard commands",
+                        "Voice commands",
+                        "Script commands"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <command> element defined a command button (obsolete).",
+                    hint: "Think about deprecated command elements."
+                },
+                {
+                    id: 48,
+                    question: "What is the purpose of the <applet> element?",
+                    code: ``,
+                    options: [
+                        "Embed Java applets (obsolete)",
+                        "Create small applications",
+                        "Load app components",
+                        "Define application areas"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <applet> element was used to embed Java applets (obsolete).",
+                    hint: "Think about legacy plugin content."
+                },
+                {
+                    id: 49,
+                    question: "What does the <blink> element do?",
+                    code: ``,
+                    options: [
+                        "Make text blink (obsolete)",
+                        "Create blinking effects",
+                        "Flash content warnings",
+                        "Animate blinking"
+                    ],
+                    correctAnswer: 0,
+                    explanation: "The <blink> element made text blink (obsolete and non-standard).",
+                    hint: "Think about deprecated presentation elements."
+                },
+                {
+                    id: 50,
+                    question: "What is the purpose of the <marquee> element?",
+                    code: ``,
+                    options: [
+                        "Create scrolling text (obsolete)",
+                        "Display marquee text",
+                        "Animate text movement",
+                        "All of the above"
+                    ],
+                    correctAnswer: 3,
+                    explanation: "The <marquee> element created scrolling text (obsolete and non-standard).",
+                    hint: "Think about deprecated animation elements."
+                }
+            ]
+        };
+
+        // App state
+        let currentTopic = null;
+        let currentQuestionIndex = 0;
+        let selectedOption = null;
+        let userProgress = {};
+        let currentShuffledOptions = [];
+
+        // DOM elements
+        const topicButtons = document.querySelectorAll('.topic-btn');
+        const questionContainer = document.getElementById('question-container');
+        const completionMessage = document.getElementById('completion-message');
+        const questionNumber = document.getElementById('question-number');
+        const topicName = document.getElementById('topic-name');
+        const answerTopic = document.getElementById('answer-topic');
+        const questionContent = document.getElementById('question-content');
+        const answerContent = document.getElementById('answer-content');
+        const optionsList = document.getElementById('options-list');
+        const submitBtn = document.getElementById('submit-btn');
+        const hintBtn = document.getElementById('hint-btn');
+        const feedback = document.getElementById('feedback');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const flipBtn = document.getElementById('flip-btn');
+        const flipBackBtn = document.getElementById('flip-back-btn');
+        const card = document.querySelector('.card');
+
+        // Fisher-Yates shuffle algorithm
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Shuffle options and track correct answer position
+        function shuffleQuestionOptions(question) {
+            const optionsWithIndex = question.options.map((option, index) => ({
+                option,
+                originalIndex: index
+            }));
+            
+            const shuffled = shuffleArray(optionsWithIndex);
+            currentShuffledOptions = shuffled;
+            
+            // Find the new position of the correct answer
+            const correctAnswerIndex = shuffled.findIndex(
+                item => item.originalIndex === question.correctAnswer
+            );
+            
+            return {
+                shuffledOptions: shuffled.map(item => item.option),
+                correctAnswerIndex: correctAnswerIndex
+            };
+        }
+
+        // Initialize the app
+        function init() {
+            // Load progress from localStorage
+            const savedProgress = localStorage.getItem('htmlCssProgress');
+            if (savedProgress) {
+                userProgress = JSON.parse(savedProgress);
+            } else {
+                // Initialize progress for all topics
+                Object.keys(questionsData).forEach(topic => {
+                    userProgress[topic] = {
+                        currentQuestion: 0,
+                        completed: Array(questionsData[topic].length).fill(false)
+                    };
+                });
+                saveProgress();
+            }
+            
+            // Add event listeners
+            topicButtons.forEach(btn => {
+                btn.addEventListener('click', () => selectTopic(btn.dataset.topic));
+            });
+            
+            submitBtn.addEventListener('click', submitAnswer);
+            hintBtn.addEventListener('click', showHint);
+            prevBtn.addEventListener('click', showPreviousQuestion);
+            nextBtn.addEventListener('click', showNextQuestion);
+            resetBtn.addEventListener('click', resetProgress);
+            restartBtn.addEventListener('click', restartQuiz);
+            flipBtn.addEventListener('click', flipCard);
+            flipBackBtn.addEventListener('click', flipCard);
+            
+            // Update progress display
+            updateProgressDisplay();
+        }
+
+        // Select a topic
+        function selectTopic(topic) {
+            currentTopic = topic;
+            currentQuestionIndex = userProgress[topic].currentQuestion;
+            showQuestion();
+            questionContainer.classList.remove('hidden');
+            completionMessage.classList.add('hidden');
+            
+            // Update active topic button
+            topicButtons.forEach(btn => {
+                if (btn.dataset.topic === topic) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Show current question
+        function showQuestion() {
+            const questions = questionsData[currentTopic];
+            const question = questions[currentQuestionIndex];
+            
+            // Shuffle options for this question
+            const { shuffledOptions, correctAnswerIndex } = shuffleQuestionOptions(question);
+            
+            // Update question number and topic
+            questionNumber.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            topicName.textContent = formatTopicName(currentTopic);
+            answerTopic.textContent = formatTopicName(currentTopic);
+            
+            // Update question content
+            questionContent.innerHTML = `
+                <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4">${question.question}</h3>
+                ${question.code ? `<pre class="bg-gray-100 p-3 md:p-4 rounded-lg overflow-x-auto text-xs md:text-sm"><code>${question.code}</code></pre>` : ''}
+            `;
+            
+            // Update answer content with correct answer from shuffled options
+            answerContent.innerHTML = `
+                <h3 class="text-lg md:text-xl font-semibold text-gray-800 mb-3 md:mb-4">${question.question}</h3>
+                <p class="text-green-600 font-semibold mb-2 text-sm md:text-base">Correct Answer: ${shuffledOptions[correctAnswerIndex]}</p>
+                <p class="text-gray-700 text-sm md:text-base">${question.explanation}</p>
+            `;
+            
+            // Update options with shuffled order
+            optionsList.innerHTML = '';
+            shuffledOptions.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option p-2 md:p-3 border border-gray-300 rounded-lg cursor-pointer transition text-sm md:text-base';
+                optionElement.textContent = option;
+                optionElement.dataset.index = index;
+                
+                // Check if this option was previously selected (using shuffled index)
+                if (userProgress[currentTopic].selectedAnswers && 
+                    userProgress[currentTopic].selectedAnswers[currentQuestionIndex] !== undefined) {
+                    // We need to find the original selected option in the shuffled array
+                    const originalSelectedIndex = userProgress[currentTopic].selectedAnswers[currentQuestionIndex];
+                    const selectedShuffledIndex = currentShuffledOptions.findIndex(
+                        item => item.originalIndex === originalSelectedIndex
+                    );
+                    
+                    if (index === selectedShuffledIndex) {
+                        optionElement.classList.add('selected');
+                        selectedOption = index;
+                    }
+                }
+                
+                optionElement.addEventListener('click', () => selectOption(optionElement));
+                optionsList.appendChild(optionElement);
+            });
+            
+            // Reset feedback
+            feedback.classList.add('hidden');
+            feedback.innerHTML = '';
+            
+            // Reset card flip
+            card.classList.remove('flipped');
+            
+            // Update button states
+            updateButtonStates();
+            
+            // Update progress display
+            updateProgressDisplay();
+        }
+
+        // Select an option
+        function selectOption(optionElement) {
+            // Remove selected class from all options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            optionElement.classList.add('selected');
+            selectedOption = parseInt(optionElement.dataset.index);
+        }
+
+        // Submit answer
+        function submitAnswer() {
+            if (selectedOption === null) {
+                feedback.innerHTML = '<p class="text-red-500 text-sm md:text-base">Please select an answer before submitting.</p>';
+                feedback.classList.remove('hidden');
+                return;
+            }
+            
+            const questions = questionsData[currentTopic];
+            const question = questions[currentQuestionIndex];
+            
+            // Find the correct answer index in the shuffled options
+            const correctAnswerIndex = currentShuffledOptions.findIndex(
+                item => item.originalIndex === question.correctAnswer
+            );
+            
+            const isCorrect = selectedOption === correctAnswerIndex;
+            
+            // Save selected answer (store the original index, not the shuffled one)
+            if (!userProgress[currentTopic].selectedAnswers) {
+                userProgress[currentTopic].selectedAnswers = [];
+            }
+            userProgress[currentTopic].selectedAnswers[currentQuestionIndex] = 
+                currentShuffledOptions[selectedOption].originalIndex;
+            
+            // Mark as completed if correct
+            if (isCorrect) {
+                userProgress[currentTopic].completed[currentQuestionIndex] = true;
+            }
+            
+            saveProgress();
+            
+            // Show feedback
+            if (isCorrect) {
+                feedback.innerHTML = `
+                    <div class="text-green-700 bg-green-100 p-3 md:p-4 rounded-lg text-sm md:text-base">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        <span class="font-semibold">Correct!</span> ${question.explanation}
+                    </div>
+                `;
+                
+                // Mark correct option
+                document.querySelectorAll('.option').forEach(opt => {
+                    if (parseInt(opt.dataset.index) === correctAnswerIndex) {
+                        opt.classList.add('correct');
+                    }
+                });
+                
+                // Move to next question after a delay if there are more questions
+                setTimeout(() => {
+                    if (currentQuestionIndex < questions.length - 1) {
+                        currentQuestionIndex++;
+                        userProgress[currentTopic].currentQuestion = currentQuestionIndex;
+                        saveProgress();
+                        showQuestion();
+                    } else {
+                        // Check if all questions are completed
+                        const allCompleted = userProgress[currentTopic].completed.every(c => c);
+                        if (allCompleted) {
+                            showCompletionMessage();
+                        } else {
+                            // Find first incomplete question
+                            const nextIncomplete = userProgress[currentTopic].completed.findIndex(c => !c);
+                            if (nextIncomplete !== -1) {
+                                currentQuestionIndex = nextIncomplete;
+                                userProgress[currentTopic].currentQuestion = currentQuestionIndex;
+                                saveProgress();
+                                showQuestion();
+                            }
+                        }
+                    }
+                }, 2000);
+            } else {
+                feedback.innerHTML = `
+                    <div class="text-red-700 bg-red-100 p-3 md:p-4 rounded-lg text-sm md:text-base">
+                        <i class="fas fa-times-circle mr-2"></i>
+                        <span class="font-semibold">Incorrect.</span> Try again or check the explanation.
+                    </div>
+                `;
+                
+                // Mark correct and incorrect options
+                document.querySelectorAll('.option').forEach(opt => {
+                    const index = parseInt(opt.dataset.index);
+                    if (index === correctAnswerIndex) {
+                        opt.classList.add('correct');
+                    } else if (index === selectedOption) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            feedback.classList.remove('hidden');
+            updateProgressDisplay();
+        }
+
+        // Show hint
+        function showHint() {
+            const questions = questionsData[currentTopic];
+            const question = questions[currentQuestionIndex];
+            
+            feedback.innerHTML = `
+                <div class="text-yellow-700 bg-yellow-100 p-3 md:p-4 rounded-lg text-sm md:text-base">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    <span class="font-semibold">Hint:</span> ${question.hint}
+                </div>
+            `;
+            feedback.classList.remove('hidden');
+        }
+
+        // Show previous question
+        function showPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                userProgress[currentTopic].currentQuestion = currentQuestionIndex;
+                saveProgress();
+                showQuestion();
+            }
+        }
+
+        // Show next question
+        function showNextQuestion() {
+            const questions = questionsData[currentTopic];
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                userProgress[currentTopic].currentQuestion = currentQuestionIndex;
+                saveProgress();
+                showQuestion();
+            }
+        }
+
+        // Update button states based on current question
+        function updateButtonStates() {
+            const questions = questionsData[currentTopic];
+            
+            // Previous button
+            if (currentQuestionIndex === 0) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+            
+            // Next button
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // Show completion message
+        function showCompletionMessage() {
+            questionContainer.classList.add('hidden');
+            completionMessage.classList.remove('hidden');
+        }
+
+        // Restart quiz
+        function restartQuiz() {
+            completionMessage.classList.add('hidden');
+            currentTopic = null;
+            currentQuestionIndex = 0;
+            selectedOption = null;
+            
+            // Reset active topic button
+            topicButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+        }
+
+        // Reset progress
+        function resetProgress() {
+            if (confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
+                // Reset progress for all topics
+                Object.keys(questionsData).forEach(topic => {
+                    userProgress[topic] = {
+                        currentQuestion: 0,
+                        completed: Array(questionsData[topic].length).fill(false)
+                    };
+                });
+                saveProgress();
+                updateProgressDisplay();
+                
+                // If a topic is currently selected, reset to first question
+                if (currentTopic) {
+                    currentQuestionIndex = 0;
+                    showQuestion();
+                }
+            }
+        }
+
+        // Update progress display
+        function updateProgressDisplay() {
+            if (!currentTopic) {
+                progressText.textContent = "Select a topic to begin";
+                progressBar.style.width = "0%";
+                return;
+            }
+            
+            const questions = questionsData[currentTopic];
+            const completedCount = userProgress[currentTopic].completed.filter(c => c).length;
+            const totalCount = questions.length;
+            const percentage = Math.round((completedCount / totalCount) * 100);
+            
+            progressText.textContent = `${completedCount}/${totalCount} (${percentage}%)`;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Flip card to show answer/back to question
+        function flipCard() {
+            card.classList.toggle('flipped');
+        }
+
+        // Format topic name for display
+        function formatTopicName(topic) {
+            return topic.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            localStorage.setItem('htmlCssProgress', JSON.stringify(userProgress));
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
